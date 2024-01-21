@@ -229,7 +229,7 @@ function HashMap() {
       let temp = ll.find(key);
       if (temp !== null) return true;
     }
-    return false
+    return false;
   }
 
   function remove(key) {
@@ -300,7 +300,7 @@ function HashMap() {
     let str = `HashMap, length = ${capacity}, ArrSize = ${arraySize}\n`;
     array.forEach((ll) => {
       if (ll) str = str.concat(ll.toString()).concat('\n');
-    })
+    });
     return str;
   }
 
