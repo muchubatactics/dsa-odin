@@ -1,11 +1,14 @@
 /*
-* 
-* LINKED LIST WITH JUST VALUE
-* 
+*
+*
+* LINKED LIST WITH KEY VALUE PAIR
+*
+*
 */
 
-function Node(val = null) {
+function Node(key = null, val = null) {
   return {
+    key: key,
     value: val,
     nextNode: null,
   };    
@@ -15,26 +18,22 @@ function LinkedList() {
   let headRef = null;
   let tailRef = null;
 
-  function append(value) {
+  function append(key, value) {
     if (!headRef) {
-      headRef = Node();
-      headRef.value = value;
+      headRef = Node(key, value);
       tailRef = headRef;
     } else {
-      tailRef.nextNode = Node();
-      tailRef.nextNode.value = value;
+      tailRef.nextNode = Node(key, value);
       tailRef = tailRef.nextNode;
     }
   }
 
-  function prepend(value) {
+  function prepend(key, value) {
     if (!headRef) {
-      headRef = Node();
-      headRef.value = value;
+      headRef = Node(key, value);
       tailRef = headRef;
     } else {
-      let temp = Node();
-      temp.value = value;
+      let temp = Node(key, value);
       temp.nextNode = headRef;
       headRef = temp;
     }
@@ -85,19 +84,19 @@ function LinkedList() {
     tailRef = refB;
   }
 
-  function contains(value) {
+  function contains(key) {
     let ref = headRef;
     while (ref) {
-      if (ref.value === value) return true;
+      if (ref.key === key) return true;
       ref = ref.nextNode;
     }
     return false;
   }
 
-  function find(value) {
+  function find(key) {
     let ref = headRef, i = 0;
     while (ref) {
-      if (ref.value === value) return i;
+      if (ref.key === key) return i;
       i++;
       ref = ref.nextNode;
     }
@@ -112,27 +111,27 @@ function LinkedList() {
         str += 'null';
         break;
       }
-      str += `(${ node.value }) -> `;
+      str += `(${ node.key}: ${ node.value }) -> `;
       node = node.nextNode;
     }
     return str;
   }
 
-  function insertAt(value, index) {
+  function insertAt(key, value, index) {
     // not getting after from before for cases where index = 0
     let before = at(index - 1);
     let after = at(index);
     
     if (!before && after) {
-      prepend(value);
+      prepend(key, value);
       return;
     }
     if (!after && before) {
-      append(value);
+      append(key, value);
       return;
     }
     if (after && before) {
-      let temp = Node(value);
+      let temp = Node(key, value);
       before.nextNode = temp;
       temp.nextNode = after;
     }
@@ -166,3 +165,5 @@ function LinkedList() {
     toString, insertAt, removeAt,
   };
 }
+
+export {Node, LinkedList};
