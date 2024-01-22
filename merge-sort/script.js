@@ -3,8 +3,9 @@
 function ms(arr) {
   if (arr.length <= 1) return arr;
   else {
-    let x = arr.slice(0, Math.floor(arr.length / 2));
-    let y = arr.slice(Math.floor(arr.length / 2));
+    let temp = Math.floor(arr.length / 2);
+    let x = arr.slice(0, temp);
+    let y = arr.slice(temp);
     return merge(ms(x), ms(y));
   }
   
