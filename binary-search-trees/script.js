@@ -48,6 +48,7 @@ function Tree(arr) {
     return newArr;
   }
 
+  // visualizing function from T O P
   const prettyPrint = (node = root, prefix = "", isLeft = true) => {
     if (node === null) {
       return;
@@ -224,13 +225,50 @@ function Tree(arr) {
     if (!cb) return arr;
   }
 
+  function height(node = root) {
+    function helper(node, num) {
+      if (!node) return num - 1;
+      let x = helper(node.left, num + 1);
+      let y = helper(node.right, num + 1);
+      return x > y ? x : y;
+    }
+    
+    return helper(node, 0);
+  }
+
+  function depth(node) {
+    function helper(root, num) {
+      if (root === node) return num;
+      if (!root) return null;
+      let x = helper(root.left, num + 1);
+      let y = helper(root.right, num + 1);
+      return x ? x : y;
+    }
+
+    return helper(root, 0);
+  }
+
+  function isBalanced(node = root) {
+    if (!node) return true;
+    let x = height(node.left);
+    let y = height(node.right);
+    if ((x > y ? x - y : y - x) > 1) return false;
+    return isBalanced(node.left) && isBalanced(node.right);
+    
+  }
+
+  function rebalance() {
+    root = buildTree(inOrder());
+  }
+
 
   return {
     prettyPrint, insert, remove,
     find, insertIterative, levelOrder,
     levelOrderIterative, preOrder,
-    postOrder, inOrder,
+    postOrder, inOrder, height, depth,
+    isBalanced, rebalance,
   };
 }
 
-let t = Tree([1,2,3,4,5,6,7,8,9,0,12,13,14,15,16]);
+module.exports = Tree;
