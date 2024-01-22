@@ -5,7 +5,7 @@
 *
 */
 
-import mergeSort from '../merge-sort/script.js';
+const mergeSort = require('../merge-sort/script.js');
 
 function Node(val = null, left = null, right = null) {
   return {
@@ -16,8 +16,24 @@ function Node(val = null, left = null, right = null) {
 }
 
 function Tree(arr) {
-  function buildTree() {
+  let root = buildTree(arr);
+  
+  function buildTree(arr) {
+    if (!arr.length) return null;
+    arr = mergeSort(arr);
+    arr = removeDuplicates(arr);
 
+    function payload(start, end) {
+      if (start > end) return null;
+      let mid = Math.floor((start + end) / 2);
+      let root = Node(arr[mid]);
+      root.left = payload(start, mid - 1);
+      root.right = payload(mid + 1, end);
+
+      return root;
+    }
+
+    return payload(0, arr.length - 1);
   }
 
   function removeDuplicates(arr) {
@@ -29,8 +45,199 @@ function Tree(arr) {
         }
       } else newArr.push(arr[i]);
     }
+    return newArr;
   }
 
-  return {removeDuplicates};
+  const prettyPrint = (node = root, prefix = "", isLeft = true) => {
+    if (node === null) {
+      return;
+    }
+    if (node.right !== null) {
+      prettyPrint(node.right, `${prefix}${isLeft ? "│   " : "    "}`, false);
+    }
+    console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.value}`);
+    if (node.left !== null) {
+      prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
+    }
+  };
+
+  function insertIterative(value) {
+    let ref = root;
+    if (!ref) {
+      root = Node(value);
+      return;
+    }
+    while (ref) {
+      if (ref.value > value) {
+        if (!ref.left) {
+          ref.left = Node(value); 
+          return;
+        }
+        ref = ref.left;
+      } else {
+        if (!ref.right) {
+          ref.right = Node(value);
+          return;
+        }
+        ref = ref.right;
+      }
+    }
+
+  }
+
+  function insert(value) {
+    function actualInsert(value, root) {
+      if (!root) {
+        root = Node(value);
+        return root;
+      }
+
+      if (root.value < value) root.right = actualInsert(value, root.right);
+      else root.left = actualInsert(value, root.left);
+      return root;
+    }
+    root = actualInsert(value, root);
+  }
+
+  function remove(value) {
+    function findLeftmost(root) {
+      if (!root.left) return root.value;
+      return findLeftmost(root.left);
+    }
+
+    function actualRemove(value, root) {
+      if (!root) return root;
+      if (value == root.value) {
+        if (!root.left && !root.right) {
+          return null;
+        } else if (!root.left || !root.right) {
+          return root.right ? root.right : root.left;
+        } else {
+          let nextBigValue = findLeftmost(root.right);
+          root = actualRemove(nextBigValue, root);
+          root.value = nextBigValue;
+          return root;
+        }
+      }
+      if (value > root.value) {
+        root.right = actualRemove(value, root.right);
+        return root;
+      } 
+      else {
+        root.left = actualRemove(value, root.left);
+        return root;
+      }
+    }
+    root = actualRemove(value, root);
+  }
+
+  function find(value) {
+    function actualFind(value, root) {
+      if (!root) return null;
+      if (root.value == value) return root;
+      if (root.value < value) return actualFind(value, root.right);
+      else return actualFind(value, root.left);
+    }
+    return actualFind(value, root);
+  }
+
+  function levelOrder(cb = null) {
+    if (!root) return;
+    
+    let queue = [], valuesArray = [], temp;
+    queue.push(root);
+
+    function helper(queue) {
+      if (!queue.length) return;
+      temp = queue.shift();
+    
+      if (cb) cb(temp)
+      else valuesArray.push(temp.value);
+
+      if (temp.left) queue.push(temp.left);
+      if (temp.right) queue.push(temp.right);
+      helper(queue);
+    }
+
+    helper(queue);
+    if (!cb) return valuesArray;
+  }
+
+  function levelOrderIterative(cb = null) {
+    if (!root) return;
+    
+    let queue = [], arrayValues = [], temp;
+    queue.push(root);
+    while(queue.length) {
+      temp = queue.shift();
+      if (temp.left) queue.push(temp.left);
+      if (temp.right) queue.push(temp.right);
+      if (cb) cb(temp);
+      else arrayValues.push(temp.value);
+    }
+    if (!cb) return arrayValues; 
+  }
+
+  function preOrder(cb = null) {
+    let arr = [];
+    function helper(root) {
+      if (!root) return;
+
+      if (cb) cb(root);
+      else arr.push(root.value);
+
+      helper(root.left);
+      helper(root.right);
+    }
+    helper(root);
+    if (!cb) return arr;
+  }
+
+  function inOrder(cb = null) {
+    let arr = [];
+    function helper(root) {
+      if (!root) return;
+
+      helper(root.left);
+
+      if (cb) cb(root);
+      else arr.push(root.value);
+
+      helper(root.right);
+    }
+    helper(root);
+    if (!cb) return arr;
+  }
+
+  function postOrder(cb = null) {
+    let arr = [];
+    function helper(root) {
+      if (!root) return;
+
+      helper(root.left);
+      helper(root.right);
+      
+      if (cb) cb(root);
+      else arr.push(root.value);
+    }
+    helper(root);
+    if (!cb) return arr;
+  }
+
+
+  return {
+    prettyPrint, insert, remove,
+    find, insertIterative, levelOrder,
+    levelOrderIterative, preOrder,
+    postOrder, inOrder,
+  };
 }
+
+let t = Tree([1,2,3,4,5,6,7,8,9,0,12,13,14,15,16]);
+t.prettyPrint();
+console.log(t.levelOrderIterative());
+console.log(t.levelOrder());
+console.log(t.inOrder());
+console.log(t.preOrder());
+console.log(t.postOrder());
 

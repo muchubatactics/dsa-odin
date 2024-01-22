@@ -33,4 +33,4 @@ function merge(arr1, arr2) {
   return arr3;
 }
 
-export default ms;
+module.exports = ms;

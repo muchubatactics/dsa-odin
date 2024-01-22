@@ -166,4 +166,4 @@ function LinkedList() {
   };
 }
 
-export {Node, LinkedList};
+module.exports = {Node, LinkedList};

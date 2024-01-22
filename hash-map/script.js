@@ -4,7 +4,7 @@
 * 
 */
 
-import {Node, LinkedList} from '../linked-list/newscript';
+const {Node, LinkedList} = require('../linked-list/newscript');
 
 /*
 *
