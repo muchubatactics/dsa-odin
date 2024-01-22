@@ -143,7 +143,7 @@ function Tree(arr) {
 
   function levelOrder(cb = null) {
     if (!root) return;
-    
+
     let queue = [], valuesArray = [], temp;
     queue.push(root);
 
@@ -165,7 +165,7 @@ function Tree(arr) {
 
   function levelOrderIterative(cb = null) {
     if (!root) return;
-    
+
     let queue = [], arrayValues = [], temp;
     queue.push(root);
     while(queue.length) {
@@ -234,10 +234,3 @@ function Tree(arr) {
 }
 
 let t = Tree([1,2,3,4,5,6,7,8,9,0,12,13,14,15,16]);
-t.prettyPrint();
-console.log(t.levelOrderIterative());
-console.log(t.levelOrder());
-console.log(t.inOrder());
-console.log(t.preOrder());
-console.log(t.postOrder());
-
